@@ -10,10 +10,15 @@ server.use(express.json());
 server.use(cors());
 server.use(body_parser.json());
 
-// << db setup >>
+if (process.env.NODE_ENV ===  "production") {
+  server.use(express.static("client/build"));
+}
+ // << db setup >>
 const db = require("./db.js");
 const dbName = "data";
 const collectionName = "movies";
+
+const port = process.env.PORT || 3001;
 
 // << db init >>
 db.initialize(dbName, collectionName, function(dbCollection) { // successCallback
@@ -86,7 +91,5 @@ db.initialize(dbName, collectionName, function(dbCollection) { // successCallbac
 }, function(err) { // failureCallback
     throw (err);
 });
-
-const port = process.env.PORT || 3001;
 
 server.listen(port, () => {console.log(`Listening on port ${port}...`)});
